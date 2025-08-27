@@ -1,14 +1,69 @@
-<html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
   <head>
-    <title>FotoBlog</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}FotoBlog{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'app.css' %}">
+    
+    
+    {% block head_extra %}{% endblock %}
   </head>
   <body>
-    <h1>FotoBlog</h1>
-    {% block content %}{% endblock content %} {% if user.is_authenticated %}
-    <p>
-      Vous êtes connecté en tant que {{ user.username }}.
-      <a href="{% url 'logout' %}">Se déconnecter</a>
-    </p>
+    <header>
+      <nav>
+        <a href="{% url 'home' %}"><strong>FotoBlog</strong></a>
+        <ul
+          style="
+            list-style: none;
+            display: inline-flex;
+            gap: 0.75rem;
+            margin-left: 1rem;
+            padding: 0;
+          "
+        >
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'home' %}">Accueil</a></li>
+          <li>
+            <a href="{% url 'password_change' %}">Changer mon mot de passe</a>
+          </li>
+          <li>
+            <!-- Déconnexion en POST (plus sûr) -->
+            <form
+              method="post"
+              action="{% url 'logout' %}"
+              style="display: inline"
+            >
+              {% csrf_token %}
+              <button type="submit">Déconnexion</button>
+            </form>
+          </li>
+          {% else %}
+          <li><a href="{% url 'login' %}">Connexion</a></li>
+          <li><a href="{% url 'signup' %}">Inscription</a></li>
+          {% endif %}
+        </ul>
+        {% if user.is_authenticated %}
+        <span style="margin-left: 1rem">Bonjour, {{ user.get_username }}</span>
+        {% endif %}
+      </nav>
+    </header>
+
+    {% if messages %}
+    <ul role="alert">
+      {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
     {% endif %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer>
+      <small>&copy; {{ now|default:None|date:"Y" }} FotoBlog</small>
+    </footer>
+
+    {% block scripts %}{% endblock %}
   </body>
 </html>

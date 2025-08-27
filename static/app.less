@@ -1,0 +1,95 @@
+/* ====== Variables ====== */
+@primary: #2563eb;
+@bg: #fbf6fa;
+@surface: #ffffff;
+@text: #83a1fd;
+@muted: #7131fd;
+@radius: 12px;
+@shadow: 0 8px 20px rgba(0,0,0,.06);
+
+/* ====== Reset doux ====== */
+html { box-sizing: border-box; font-size: 16px; }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0;
+  background: @bg;
+  color: @text;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.6;
+}
+a { color: @primary; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ====== Layout ====== */
+.container { max-width: 980px; margin: 24px auto; padding: 0 16px; }
+.card { background: @surface; border-radius: @radius; box-shadow: @shadow; padding: 20px; }
+
+/* ====== Header/Nav ====== */
+header {
+  background: @surface;
+  box-shadow: @shadow;
+  position: sticky; top: 0; z-index: 10;
+}
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 16px;
+}
+.nav-left, .nav-right { display: flex; align-items: center; gap: 12px; }
+.brand { font-weight: 700; color: @text; }
+nav a { padding: 8px 10px; border-radius: 10px; }
+nav a:hover { background: fade(@primary,12%); text-decoration: none; }
+
+/* ====== Boutons ====== */
+.btn() {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid transparent; border-radius: @radius; padding: .6rem .9rem;
+  font-weight: 600; cursor: pointer; transition: transform .04s ease, box-shadow .2s ease;
+}
+.btn-primary {
+  .btn(); background: @primary; color: #fff;
+  box-shadow: 0 6px 16px fade(@primary,30%);
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-ghost {
+  .btn(); background: transparent; color: @text; border-color: fade(@muted,30%);
+}
+.btn-ghost:hover { background: #f2f4f7; }
+
+/* ====== Formulaires ====== */
+form { display: grid; gap: 14px; }
+label { font-weight: 600; color: @text; }
+input, select, textarea {
+  width: 100%; padding: .65rem .8rem; font: inherit;
+  background: #fff; border: 1px solid fade(@muted,35%); border-radius: @radius;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: @primary; box-shadow: 0 0 0 3px fade(@primary,22%);
+}
+.form-row { display: grid; gap: 6px; }
+.error { color: #b91c1c; font-size: .92rem; }
+
+/* ====== Messages ====== */
+.alert { padding: .8rem 1rem; border-radius: @radius; }
+.alert.success { background: #ecfdf5; color: #065f46; }
+.alert.error   { background: #fee2e2; color: #991b1b; }
+.alert.info    { background: #e0f2fe; color: #075985; }
+
+/* ====== Pages auth ====== */
+.auth {
+  .card();
+  max-width: 420px;
+  margin: 36px auto;
+}
+.auth h2 { margin: 0 0 10px; }
+
+/* ====== Dark mode auto ====== */
+@media (prefers-color-scheme: dark) {
+  @bg: #0b1220;
+  @surface: #0f172a;
+  @text: #e5e7eb;
+  body { background: @bg; color: @text; }
+  header { background: @surface; }
+  .card { background: @surface; }
+  input, select, textarea { background: #0b1220; color: @text; border-color: fade(@text,15%); }
+  .btn-ghost:hover { background: fade(#fff, 6%); }
+}

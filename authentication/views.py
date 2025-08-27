@@ -1,25 +1,13 @@
+
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from . import forms   
+from django.contrib.auth import login
+from .forms import CustomUserCreationForm
 
-def logout_user(request):
-    
-    logout(request)
-    return redirect('login')
+def signup(request):
+    form = CustomUserCreationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        user = form.save()
+        login(request, user)
+        return redirect("home")
+    return render(request, "authentication/signup.html", {"form": form})
 
-# views.py
-def login_page(request):
-    form = forms.LoginForm()
-    message = ''
-    if request.method == 'POST':
-        form = forms.LoginForm(request.POST)
-        if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password'],
-            )
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-        message = 'Identifiants invalides.'
-    return render(request, 'authentication/login.html', context={'form': form, 'message': message})

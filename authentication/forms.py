@@ -1,6 +1,11 @@
+# authentication/forms.py
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=150, label="Nom d'utilisateur")
-    password = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
+class CustomUserCreationForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User  # ton modèle personnalisé
+        fields = ("username", "email")  # ajoute les champs que tu veux exposer

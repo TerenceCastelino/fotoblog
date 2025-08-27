@@ -1,11 +1,39 @@
-{% extends "base.html" %} {% block content %}
-<h2>Connexion</h2>
+{% extends "base.html" %} {% block title %}Connexion — FotoBlog{% endblock %} 
+{%block content %}
+<section class="auth">
+  <h2>Connexion</h2>
 
-<form method="post" action="">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit">Se connecter</button>
-</form>
+  {% if form.non_field_errors %}
+  <div class="alert error">{{ form.non_field_errors }}</div>
+  {% endif %}
 
-{% if message %}
-<p>{{ message }}</p>
-{% endif %} {% endblock %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <p>
+      {{ form.username.label_tag }} {{ form.username }} 
+      {% for e in form.username.errors %}<span class="error">{{ e }}</span>{% endfor %}
+    </p>
+
+    <p>
+      {{ form.password.label_tag }} {{ form.password }} 
+      {% for e in form.password.errors %}
+      <span class="error">{{ e }}</span>
+      {% endfor %}
+    </p>
+
+    <!-- préserve ?next=... -->
+    <input
+      type="hidden"
+      name="{{ redirect_field_name }}"
+      value="{{ redirect_field_value }}"
+    />
+
+    <button type="submit">Se connecter</button>
+  </form>
+
+  <p class="mt">
+    Pas de compte ? <a href="{% url 'signup' %}">Créer un compte</a>
+  </p>
+</section>
+{% endblock content %}
