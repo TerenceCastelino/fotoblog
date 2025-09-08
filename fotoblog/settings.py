@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'authentication',
+    # 'authentication',
+    'authentication.apps.AuthenticationConfig',
     'blog',
 ]
 
@@ -134,5 +135,8 @@ AUTH_USER_MODEL = 'authentication.User'
 LOGIN_URL = 'login'
 
 LOGIN_REDIRECT_URL = 'home'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR.joinpath('media/')
 
 

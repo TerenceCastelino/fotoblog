@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>{{ blog.title }}</h2>
+
+  {# Afficher le lien "Modifier" seulement pour auteur OU admin #}
+  {% if user.is_authenticated %}
+    {% if blog.author == user or user.is_superuser or perms.blog.change_blog %}
+      <p><a href="{% url 'edit_blog' blog.id %}">Modifier le billet</a></p>
+    {% endif %}
+  {% endif %}
+
+  {% if blog.photo %}
+    <img src="{{ blog.photo.image.url }}" alt="{{ blog.photo.caption }}">
+    {% if blog.photo.caption %}
+      <p>{{ blog.photo.caption }}</p>
+    {% endif %}
+  {% endif %}
+
+  <p>{{ blog.content }}</p>
+{% endblock content %}
+

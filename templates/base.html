@@ -6,63 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}FotoBlog{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'app.css' %}">
-    
-    
     {% block head_extra %}{% endblock %}
   </head>
-  <body>
-    <header>
-      <nav>
-        <a href="{% url 'home' %}"><strong>FotoBlog</strong></a>
-        <ul
-          style="
-            list-style: none;
-            display: inline-flex;
-            gap: 0.75rem;
-            margin-left: 1rem;
-            padding: 0;
-          "
-        >
-          {% if user.is_authenticated %}
-          <li><a href="{% url 'home' %}">Accueil</a></li>
-          <li>
-            <a href="{% url 'password_change' %}">Changer mon mot de passe</a>
-          </li>
-          <li>
-            <!-- Déconnexion en POST (plus sûr) -->
-            <form
-              method="post"
-              action="{% url 'logout' %}"
-              style="display: inline"
-            >
-              {% csrf_token %}
-              <button type="submit">Déconnexion</button>
-            </form>
-          </li>
-          {% else %}
-          <li><a href="{% url 'login' %}">Connexion</a></li>
-          <li><a href="{% url 'signup' %}">Inscription</a></li>
-          {% endif %}
-        </ul>
+  <body class="app">
+    <div class="layout">
+
+      <!-- Sidebar / Navbar gauche -->
+      <aside class="sidebar">
+        <a class="brand" href="{% url 'home' %}">FotoBlog</a>
+
+        <nav class="nav">
+          <ul class="nav__list">
+            {% if user.is_authenticated %}
+              <li><a class="nav__link" href="{% url 'home' %}">Accueil</a></li>
+              <li><a class="nav__link" href="{% url 'password_change' %}">Changer mon mot de passe</a></li>
+
+              {% if perms.blog.add_photo %}
+                <li><a class="nav__link" href="{% url 'photo_upload' %}">Ajouter une photo</a></li>
+                <li><a class="nav__link" href="{% url 'create_multiple_photos' %}">Télécharger plusieurs photos</a></li>
+              {% endif %}
+
+              {% if perms.blog.add_blog %}
+                <li><a class="nav__link" href="{% url 'blog_create' %}">Ajouter un blog</a></li>
+              {% endif %}
+
+              <li>
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button class="btn btn--ghost" type="submit">Déconnexion</button>
+                </form>
+              </li>
+            {% else %}
+              <li><a class="nav__link" href="{% url 'login' %}">Connexion</a></li>
+              <li><a class="nav__link" href="{% url 'signup' %}">Inscription</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+
         {% if user.is_authenticated %}
-        <span style="margin-left: 1rem">Bonjour, {{ user.get_username }}</span>
+          {% static 'images/imageProfilDefaut.png' as default_avatar %}
+          <a class="avatar" href="{% url 'upload_profile_photo' %}">
+            {% if user.profile_photo %}
+              <img class="avatar__img" src="{{ user.profile_photo.url }}" alt="Mon avatar">
+            {% else %}
+              <img class="avatar__img" src="{{ default_avatar }}" alt="Mon avatar">
+            {% endif %}
+            <span class="avatar__label">Changer</span>
+          </a>
+
+          <div class="hello">Bonjour, {{ user.get_username }}</div>
         {% endif %}
-      </nav>
-    </header>
+      </aside>
 
-    {% if messages %}
-    <ul role="alert">
-      {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
+      <!-- Contenu principal -->
+      <div class="content">
+        {% if messages %}
+          <ul class="alerts" role="alert">
+            {% for message in messages %}
+              <li class="alert alert--{{ message.tags|default:'info' }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
 
-    <main>{% block content %}{% endblock %}</main>
+        <main class="container">
+          {% block content %}{% endblock %}
+        </main>
 
-    <footer>
-      <small>&copy; {{ now|default:None|date:"Y" }} FotoBlog</small>
-    </footer>
+        <footer class="footer">
+          <small>&copy; {{ now|default:None|date:"Y" }} FotoBlog</small>
+        </footer>
+      </div>
+    </div>
 
     {% block scripts %}{% endblock %}
   </body>
